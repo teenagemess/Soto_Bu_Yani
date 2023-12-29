@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .cart-item {
+            margin-bottom: 15px;
+        }
+
+        .total {
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .btn-selesai {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-selesai:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <title>Detail Pembelian</title>
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="text-center mb-4">Your Order Details</h2>
+        <div id="cart-container" class="list-group"></div>
+        <div class="total" id="total-container"></div>
+        <button style="background-color: #233000;" class="btn btn-selesai btn-block mt-3" onclick="selesai()">Pay
+            Now!</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        const cartContainer = document.getElementById('cart-container');
+        const totalContainer = document.getElementById('total-container');
+        const btnSelesai = document.querySelector('.btn-selesai');
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function renderCart() {
+            cart.forEach(item => {
+                const listItem = document.createElement('a');
+                listItem.classList.add('list-group-item', 'list-group-item-action', 'cart-item');
+                listItem.innerHTML = `
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">${item.menu.namamenu}</h5>
+                        <small>Quantity: ${item.quantity}</small>
+                    </div>
+                    <p class="mb-1">Subtotal: Rp. ${item.menu.harga * item.quantity}</p>
+                `;
+                cartContainer.appendChild(listItem);
+            });
+        }
+
+        function calculateTotal() {
+            const totalHarga = cart.reduce((total, item) => total + item.menu.harga * item.quantity, 0);
+            totalContainer.innerHTML = `<h4 class="total">Total Harga: Rp. ${totalHarga}</h4>`;
+        }
+
+        function selesai() {
+            // Reset cart and redirect to index.html
+            localStorage.removeItem('cart');
+            window.location.href = 'indexloginned.html';
+        }
+
+        renderCart();
+        calculateTotal();
+    </script>
+</body>
+
+</html>
