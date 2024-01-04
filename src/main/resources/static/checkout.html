@@ -49,6 +49,8 @@
         }
     </style>
     <title>Detail Pembelian</title>
+
+
 </head>
 
 <body>
@@ -56,13 +58,17 @@
         <h2 class="text-center mb-4">Your Order Details</h2>
         <div id="cart-container" class="list-group"></div>
         <div class="total" id="total-container"></div>
+        <button style="border: solid;" class="btn btn-outline btn-block mt-3" onclick="printTransaction()">Print
+            Transaction</button>
         <button style="background-color: #233000;" class="btn btn-selesai btn-block mt-3" onclick="selesai()">Pay
             Now!</button>
     </div>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/jspdf-invoice-template@1.4.0/dist/index.js"></script>
+
     <script>
         const cartContainer = document.getElementById('cart-container');
         const totalContainer = document.getElementById('total-container');
@@ -84,9 +90,28 @@
             });
         }
 
+        function printTransaction() {
+            const pdf = new jsPDF();
+
+            // Tambahkan konten PDF di sini
+            pdf.text('Your Order Details', 20, 20);
+
+            // Loop untuk setiap item di keranjang
+            let yPos = 40;
+            cart.forEach(item => {
+                pdf.text(`${item.menu.namamenu} - Quantity: ${item.quantity} - Subtotal: Rp. ${item.menu.harga * item.quantity}`, 20, yPos);
+                yPos += 10;
+            });
+
+            // Tambahkan total harga
+            pdf.text(`Total Harga: Rp. ${calculateTotal()}`, 20, yPos + 10);
+
+            // Simpan ke file atau tampilkan dalam browser
+            pdf.save('transaction.pdf');
+        }
+
         function calculateTotal() {
-            const totalHarga = cart.reduce((total, item) => total + item.menu.harga * item.quantity, 0);
-            totalContainer.innerHTML = `<h4 class="total">Total Harga: Rp. ${totalHarga}</h4>`;
+            return cart.reduce((total, item) => total + item.menu.harga * item.quantity, 0);
         }
 
         function selesai() {
